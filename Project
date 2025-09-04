@@ -1,0 +1,16 @@
+strategy="c_console"
+
+[main]
+compiler="clang"
+flags="-O3 -D_XOPEN_SOURCE=500 -std=c23 -c"
+ldflags="-O3"
+binary_name="mpt"
+sources="src"
+post_cmd="rm obj/* -r"
+
+[testing]
+compiler="clang"
+flags="-O3 -D_XOPEN_SOURCE=500 -std=c23 -c"
+ldflags="-O3"
+binary_name="mpt-testing"
+post_cmd="rm obj/* -r"
