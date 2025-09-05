@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <libgen.h>
+#include <unistd.h>
 
 target CURRENT_TARGET;
 global_config GLOBAL_CONFIG;
@@ -82,7 +84,7 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->compiler = fvalue;
 		return;
 	}
-	if (strcmp(fname, "post_cmd") == 0) {
+	if (strcmp(fname, "post_cmd") == 0 || strcmp(fname, "cmd") == 0) {
 		free(dest->post_cmd);
 		dest->post_cmd = fvalue;
 		return;
@@ -111,16 +113,7 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 	exit(3);
 }
 
-static target* parse_target(char* text, int* pos) {
-	target* res = malloc(sizeof(target));
-	
-	res->ldflags = strdup("-O3");
-	res->flags = strdup("-O3 -std=c23 -c");
-	res->post_cmd = strdup("");
-	res->compiler = strdup("cc");
-	res->binary_name = strdup("program");
-	res->sources = strdup("src");
-
+static char* parse_head(char* text, int* pos) {
 	char target_name[32];
 	int i = 0;
 	for(;text[*pos] != 0 && text[*pos] != '['; (*pos)++);
@@ -139,13 +132,34 @@ static target* parse_target(char* text, int* pos) {
 		}
 	}
 	target_name[i] = 0;
-
-	res->name = strdup(target_name);
 	
 	if (text[*pos] == 0) {
 		printf("Unclosed '['\n");
 		exit(2);
 	}
+
+	return strdup(target_name);
+}
+
+static target* parse_target(char* text, int* pos) {
+	target* res = malloc(sizeof(target));
+	
+	res->ldflags = strdup("-O3");
+	res->flags = strdup("-O3 -std=c23 -c");
+	res->post_cmd = strdup("");
+	res->compiler = strdup("cc");
+	res->binary_name = strdup("program");
+
+	char cwd[1024];
+
+	if (getcwd(cwd, sizeof(cwd)) != NULL) {
+		free(res->binary_name);
+		res->binary_name = strdup(basename(cwd));
+	}
+
+	res->sources = strdup("src");
+
+	res->name = parse_head(text, pos);
 
 	(*pos)++;
 

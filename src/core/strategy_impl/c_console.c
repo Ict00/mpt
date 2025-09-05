@@ -2,10 +2,10 @@
 #include "string.h"
 #include "../../utils.h"
 #include "../../config/gconfig.h"
+#include <linux/limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 
-char to_link[4096];
 int compiled = 0;
 
 void compile_sf(char *l) {
@@ -30,7 +30,7 @@ void cct_done() {
 }
 
 void cct_compile() {
-	char buffer[256];
+	char buffer[PATH_MAX];
 	int bi = 0;
 	int i = 0;
 	for (; CURRENT_TARGET.sources[i] != 0; i++) {
@@ -51,6 +51,7 @@ void cct_compile() {
 }
 
 void cct_link() {
+	char to_link[4096] = {0};
 	sprintf(to_link, "%s -o %s obj/*.o", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
 	strcat(to_link, " ");
 	strcat(to_link, CURRENT_TARGET.ldflags);

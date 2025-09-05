@@ -1,6 +1,5 @@
 #include "config/gconfig.h"
 #include "core/strategy.h"
-#include "core/strategy_impl/c_console.h"
 #include "utils.h"
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +8,7 @@
 
 void help() {
 	// TODO: Help someone
+	printf("\x1b[1mMPT\x1b[0m Usage:\nmpt build (target) - build target\n");
 }
 
 void build(int argc, char** args) {
