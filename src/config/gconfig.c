@@ -22,6 +22,8 @@ static char* parse_str(char* text, int* pos) {
 	char buf[256];
 
 	(*pos)++;
+
+	skip_spaces(text, pos);
 	
 	for(;text[*pos] != 0 && text[*pos] != '"'; (*pos)++) {
 		if (text[*pos] == '\\') {
@@ -116,10 +118,15 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 static char* parse_head(char* text, int* pos) {
 	char target_name[32];
 	int i = 0;
-	for(;text[*pos] != 0 && text[*pos] != '['; (*pos)++);
+	for(;text[*pos] != 0 && text[*pos] != '[' && text[*pos] != ']'; (*pos)++);
 	
+	if (text[*pos] == ']') {
+		goto expected_head;
+	}
+
 	if (text[*pos] == 0) {
-		printf("Expected target\n");
+expected_head:
+		printf("Expected [head]\nPos: %d", *pos);
 		exit(2);
 	}
 
@@ -208,4 +215,75 @@ void parse_cfg(char *config_text) {
 		.target_count = target_count,
 		.strategy = strategy
 	};
+}
+
+td_project parse_tcfg(char *config_text) {
+	td_project project = {.file_count=1};
+	td_file** files = malloc(sizeof(td_file*));
+
+	int pos = 0;
+	char dirs[4096];
+	dirs[0] = 0;
+	
+	for (; config_text[pos] != 0;) {
+		skip_spaces(config_text, &pos);
+		if (config_text[pos] == 0) break;
+
+		char* head = parse_head(config_text, &pos);
+		pos++;
+		skip_spaces(config_text, &pos);
+
+		char* EMPTY;
+		char* type = parse_var(config_text, &EMPTY, &pos);
+		pos++;
+
+		if (strcmp(EMPTY, "type") != 0) {
+			printf("Expected type declaration\n");
+			exit(2);
+		}
+		
+		if (strcmp(type, "dir") == 0) {
+			strcat(dirs, head);
+			free(head);
+			strcat(dirs, ":");
+		}
+		else if (strcmp(type, "file") == 0) {
+			free(EMPTY);
+			skip_spaces(config_text, &pos);
+			char* content = parse_var(config_text, &EMPTY, &pos);
+			pos++;
+			
+			if (strcmp(EMPTY, "content") != 0) {
+				printf("Expected content declaration\n");
+				exit(2);
+			}
+			
+			td_file* file = malloc(sizeof(td_file));
+
+			file->name = head;
+			file->content = content;
+
+			files = realloc(files, sizeof(td_file*)*(project.file_count+1));
+			files[project.file_count-1] = file;
+			project.file_count++;
+
+			free(EMPTY);
+		}
+		else {
+			printf("Invalid type in type declaration: %s\n", type);
+			exit(2);
+		}
+	}
+	
+	files = realloc(files, sizeof(td_file*) * (project.file_count - 1));
+	
+	project.files = files;
+	project.file_count--;
+
+	if (strlen(dirs) > 0)
+		dirs[strlen(dirs)-1] = 0;
+	
+	project.dirs = strdup(dirs);
+
+	return project;
 }

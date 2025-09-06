@@ -128,6 +128,15 @@ bool is_file(const char *path) {
 	return S_ISREG(path_stat.st_mode);
 }
 
+bool is_dir(const char *path) {
+	struct stat path_stat;
+	
+	if (stat(path, &path_stat) != 0) {
+		return false;
+	}
+	return S_ISDIR(path_stat.st_mode);
+}
+
 char* bar(int length, int max_amount, int amount) {
 	if (length <= 0 || amount < 0 || max_amount < amount || max_amount <= 0)
 		return NULL;

@@ -9,6 +9,6 @@ struct {
 
 struct {
 	char* dirs;
-	td_file* files;
+	td_file** files;
 	size_t file_count;
 } typedef td_project;

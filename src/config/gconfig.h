@@ -1,6 +1,8 @@
 #pragma once
 
 #include <stddef.h>
+#include "../core/template.h"
+
 struct {
 	char* compiler;
 	char* flags;
@@ -21,3 +23,4 @@ extern target CURRENT_TARGET;
 extern global_config GLOBAL_CONFIG;
 
 void parse_cfg(char* config_text);
+td_project parse_tcfg(char* config_text);
