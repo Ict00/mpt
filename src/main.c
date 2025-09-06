@@ -29,7 +29,7 @@ void new(int argc, char** args) {
 	char* home_dir;
 
 	if ((home_dir = getenv("HOME")) == NULL) {
-		printf("*HOME environment variable is not set*\n");
+		fprintf(stderr, "*HOME environment variable is not set*\n");
 		exit(3);
 	}
 
@@ -41,7 +41,7 @@ void new(int argc, char** args) {
 	strcat(template_location, template_name);
 	
 	if (!is_file(template_location) || is_dir(template_location)) {
-		printf("*Path '%s' is not a file/doesn't exist*\n", template_location);
+		fprintf(stderr, "*Path '%s' is not a file/doesn't exist*\n", template_location);
 		exit(3);
 	}
 
@@ -54,7 +54,7 @@ void new(int argc, char** args) {
 		chdir(project_name);
 	}
 	else {
-		printf("*Directory/file '%s' already exist*\n", project_name);
+		fprintf(stderr, "*Directory/file '%s' already exist*\n", project_name);
 		exit(3);
 	}
 
@@ -91,7 +91,7 @@ void new(int argc, char** args) {
 		FILE* fptr = fopen(project.files[i]->name, "w");
 
 		if (fptr == NULL) {
-			printf("*Error occured while creating file '%s'*\n", project.files[i]->name);
+			fprintf(stderr, "*Error occured while creating file '%s'*\n", project.files[i]->name);
 			exit(4);
 		}
 
@@ -120,7 +120,7 @@ void build(int argc, char** args) {
 			}
 		}
 
-		printf("*Target '%s' not found*\n", desired);
+		fprintf(stderr, "*Target '%s' not found*\n", desired);
 		exit(3);
 	}
 success:
@@ -135,7 +135,7 @@ success:
 		return;
 	}
 
-	printf("Unknown strategy: %s\n", GLOBAL_CONFIG.strategy);
+	fprintf(stderr, "Unknown strategy: %s\n", GLOBAL_CONFIG.strategy);
 }
 
 int main(int argc, char** args) {
@@ -155,7 +155,6 @@ int main(int argc, char** args) {
 	}
 
 	if (strcmp(args[1], "new") == 0) {
-		// TODO: add template functionality
 		new(argc-2, args+2);
 		return 0;
 	}

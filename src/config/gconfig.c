@@ -60,7 +60,7 @@ static char* parse_var(char* text, char** var_name, int* pos) {
 	*var_name = strdup(var_name_buf);
 	
 	if (text[*pos] == 0) {
-		printf("Expected value, got EOF\n");
+		fprintf(stderr, "ERR WHILE PARSING\nExpected value, got EOF\nPosition: %d\n", *pos);
 		exit(2);
 	}
 	
@@ -69,7 +69,7 @@ static char* parse_var(char* text, char** var_name, int* pos) {
 	skip_spaces(text, pos);
 	
 	if(text[*pos] != '"') {
-		printf("Expected value, got '%c'\n", text[*pos]);
+		fprintf(stderr, "ERR WHILE PARSING\nExpected value, got '%c'\nPosition: %d\n", text[*pos], *pos);
 		exit(2);
 	}
 
@@ -111,7 +111,7 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->flags = fvalue;
 		return;
 	}
-	printf("Invalid config var: %s\n", fname);
+	fprintf(stderr, "ERR WHILE PARSING\nInvalid config var: %s\n", fname);
 	exit(3);
 }
 
@@ -126,7 +126,7 @@ static char* parse_head(char* text, int* pos) {
 
 	if (text[*pos] == 0) {
 expected_head:
-		printf("Expected [head]\nPos: %d", *pos);
+		fprintf(stderr, "ERR WHILE PARSING\nExpected [head]\nPosition: %d\n", *pos);
 		exit(2);
 	}
 
@@ -141,7 +141,7 @@ expected_head:
 	target_name[i] = 0;
 	
 	if (text[*pos] == 0) {
-		printf("Unclosed '['\n");
+		fprintf(stderr, "ERR WHILE PARSING\nUnclosed '['\nPosition: %d\n", *pos);
 		exit(2);
 	}
 
@@ -190,7 +190,7 @@ void parse_cfg(char *config_text) {
 	char* strategy = parse_var(config_text, &EMPTY, &i);
 
 	if (strcmp(EMPTY, "strategy") != 0) {
-		printf("Expected 'strategy', got '%s'", EMPTY);
+		fprintf(stderr, "ERR WHILE PARSING\nExpected 'strategy', got '%s'\nPosition: %d\n", EMPTY, i);
 		exit(2);
 	}
 
@@ -238,7 +238,7 @@ td_project parse_tcfg(char *config_text) {
 		pos++;
 
 		if (strcmp(EMPTY, "type") != 0) {
-			printf("Expected type declaration\n");
+			fprintf(stderr, "ERR WHILE PARSING\nExpected type declaration\nPosition: %d\n", pos);
 			exit(2);
 		}
 		
@@ -254,7 +254,7 @@ td_project parse_tcfg(char *config_text) {
 			pos++;
 			
 			if (strcmp(EMPTY, "content") != 0) {
-				printf("Expected content declaration\n");
+				fprintf(stderr, "ERR WHILE PARSING\nExpected content declaration\nPosition: %d\n", pos);
 				exit(2);
 			}
 			
@@ -270,7 +270,7 @@ td_project parse_tcfg(char *config_text) {
 			free(EMPTY);
 		}
 		else {
-			printf("Invalid type in type declaration: %s\n", type);
+			fprintf(stderr, "ERR WHILE PARSING\nInvalid type in type declaration: %s\nPosition: %d\n", type, pos);
 			exit(2);
 		}
 	}

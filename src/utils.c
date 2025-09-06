@@ -51,10 +51,7 @@ char* read_file(const char *file_name) {
 	FILE* file = fopen(file_name, "r");
 
 	if (!file) {
-		char* _bar = bar(30, 1, 0);
-		char status[128];
-		sprintf(status, "Failed to open '%s' file (Doesn't exist/Is a directory?)", file_name);
-		out_status(status, _bar, -1, -1);
+		fprintf(stderr, "Failed to open file '%s'\n", file_name);
 		exit(-1);
 		return "";
 	}

@@ -15,11 +15,11 @@ void compile_sf(char *l) {
 	char cmd[1024];
 	snprintf(cmd, sizeof(cmd), "%s %s -o obj/%d.o %s", CURRENT_TARGET.compiler, l, compiled, CURRENT_TARGET.flags);
 
-	int i = system(cmd);
+	int status = system(cmd);
 
-	if (i != 0) {
-		printf("*Error occured during compilation*\n");
-		exit(i);
+	if (status != 0) {
+		fprintf(stderr, "*Error occured during compilation; status code: %d*\n", status);
+		exit(status);
 	}
 
 	compiled++;
@@ -55,10 +55,10 @@ void cct_link() {
 	sprintf(to_link, "%s -o %s obj/*.o", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
 	strcat(to_link, " ");
 	strcat(to_link, CURRENT_TARGET.ldflags);
-	int i = system(to_link);
+	int status = system(to_link);
 	
-	if (i != 0) {
-		printf("*Error occured during linking*\n");
-		exit(i);
+	if (status != 0) {
+		fprintf(stderr, "*Error occured during linking; status code: %d*\n", status);
+		exit(status);
 	}
 }
