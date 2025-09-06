@@ -183,7 +183,14 @@ success:
 }
 
 int main(int argc, char** args) {
-	if (argc <= 1) {
+	if (args == 0) return -90;
+
+	if (argc == 1) {
+		printf("%s help for help\n", args[0]);
+		return 0;
+	}
+
+	if (strcmp(args[1], "help") == 0) {
 		help();
 		return 0;
 	}
@@ -204,7 +211,7 @@ int main(int argc, char** args) {
 		return 0;
 	}
 
-	help();
+	printf("%s help for help\n", args[0]);	
 
 	return 0;
 }
