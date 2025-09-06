@@ -156,6 +156,7 @@ static target* parse_target(char* text, int* pos) {
 	res->post_cmd = strdup("");
 	res->compiler = strdup("cc");
 	res->binary_name = strdup("program");
+	res->sources = strdup("src");
 
 	char cwd[1024];
 
@@ -163,8 +164,6 @@ static target* parse_target(char* text, int* pos) {
 		free(res->binary_name);
 		res->binary_name = strdup(basename(cwd));
 	}
-
-	res->sources = strdup("src");
 
 	res->name = parse_head(text, pos);
 

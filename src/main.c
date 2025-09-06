@@ -13,8 +13,50 @@
 #include <sys/stat.h>
 
 void help() {
-	// TODO: Help someone
-	printf("\x1b[1mMPT\x1b[0m Usage:\nmpt build (target) - build target\n");
+	printf("\x1b[1mMPT\x1b[0m Usage: mpt [command] [args]\n Commands:\n");
+	printf("%-34s - %s\n", "info", "Show current version");
+	printf("%-34s - %s\n", "build [target]", "Build target");
+	printf("%-34s - %s\n", "new   [template] [project name]", "Make new project from template");
+
+	printf("  Project configuration:\n");
+	printf("Project configuration is stored in 'Project' file\n");
+
+	printf(" \x1b[1mProject file syntax\x1b[0m:\n\n");
+
+	printf("strategy=\"...\"\n");
+	printf("[target_1]\n");
+	printf("compiler=\"...\"\n");
+	printf("flags=\"...\"\n");
+	printf("ldflags=\"...\"\n");
+	printf("sources=\"dir1:dir2:dirn\"\n");
+	printf("output=\"...\"\n");
+	printf("post_cmd=\"...\"\n");
+	printf("[target_n]\n...\n\n");
+
+	printf(" Defaults for each parameter:\n\n");
+
+	printf("compiler=\"cc\"\n");
+	printf("flags=\"-O3 -std=c23 -c\"\n");
+	printf("ldflags=\"-O3\"\n");
+	printf("sources=\"src\"\n");
+	printf("output=\"name of directory\"\n");
+	printf("post_cmd=\"\"\n\n");
+
+	printf("\x1b[1mNOTE\x1b[0m:\n'obj' directory must exist (unless you use 'dummy' build strategy)\n");
+	printf("First parameter in any Project file must be 'strategy'\n");
+
+	printf("  Templates:\n");
+	printf("Templates are stored in ~/.config/mpt/\n");
+	
+	printf(" \x1b[1mTemplate syntax\x1b[0m:\n\n");
+	printf("[dir1]\ntype=\"dir\"\n\n");
+	printf("[dir1/dir2]\ntype=\"dir\"\n\n");
+	printf("[dirN]\ntype=\"dir\"\n\n");
+	printf("[file1]\ntype=\"file\"\ncontent=\"...\"\n");
+	printf("[dir1/file1]\ntype=\"file\"\ncontent=\"...\"\n");
+	printf("[dirN/.../fileN]\ntype=\"file\"\ncontent=\"...\"\n\n");
+	
+	printf("\x1b[1mNOTE\x1b[0m:\nDirectories are created EXACTLY in the same order as specified in template, not recursively\n");
 }
 
 void new(int argc, char** args) {
