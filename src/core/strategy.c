@@ -27,7 +27,7 @@ void init_strategies() {
 }
 
 void do_strategy(strategy_t strategy) {
-	printf("\x1b[1m" PROJ_NAME "\x1b[0m\nBuilding with '%s'\n\n\n\n", strategy.name);
+	printf("\x1b[1mMPT\x1b[0m\nBuilding with '%s'\n\n\n\n", strategy.name);
 	for (int i = 0; i < strategy.steps_count; ++i) {
 		char* _bar = bar(30, strategy.steps_count, i);
 		out_status(strategy.steps[i].description, _bar, strategy.steps_count, i);

@@ -2,8 +2,6 @@
 
 #include <stdbool.h> 
 
-#define PROJ_NAME "MPT"
-
 typedef void (*listdir_exec)(char* path);
 
 char* get_file_name(char* path);

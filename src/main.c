@@ -12,6 +12,8 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#define MPT_VERSION "0"
+
 void help() {
 	printf("\x1b[1mMPT\x1b[0m Usage: mpt [command] [args]\n Commands:\n");
 	printf("%-34s - %s\n", "info", "Show current version");
@@ -191,8 +193,9 @@ int main(int argc, char** args) {
 		return 0;
 	}
 
-	if (strcmp(args[1], "info") == 0) {
-		printf("MPT v0\n");
+	if (strcmp(args[1], "info") == 0 ||
+	    strcmp(args[1], "version") == 0) {
+		printf("MPT v" MPT_VERSION "\n");
 		return 0;
 	}
 
