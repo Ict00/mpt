@@ -7,11 +7,3 @@ ldflags="-O3"
 sources="src"
 output="mpt"
 post_cmd="rm obj/* -r"
-
-[testing]
-compiler="clang"
-flags="-O3 -D_XOPEN_SOURCE=500 -std=c23 -c"
-ldflags="-O3"
-sources="src"
-output="mpt-testing"
-post_cmd="rm obj/* -r"
