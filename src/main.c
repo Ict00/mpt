@@ -149,7 +149,7 @@ void new(int argc, char** args) {
 		fclose(fptr);
 	}
 
-	printf("Initialized!\n");
+	printf("%s", project_name); fflush(stdout);
 }
 
 void build(int argc, char** args) {
