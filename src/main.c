@@ -13,6 +13,11 @@
 #include <sys/stat.h>
 
 #define MPT_VERSION "0"
+#define try_do_strategy(strat) \
+    if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
+        do_strategy(strat); \
+        return; \
+    }
 
 void help() {
 	printf("\x1b[1mMPT\x1b[0m Usage: mpt [command] [args]\n Commands:\n");
@@ -168,16 +173,9 @@ void build(int argc, char** args) {
 		exit(3);
 	}
 success:
-
-	if (strcmp(GLOBAL_CONFIG.strategy, "c_console") == 0) {
-		do_strategy(c_console);
-		return;
-	}
-
-	if (strcmp(GLOBAL_CONFIG.strategy, "dummy") == 0) {
-		do_strategy(dummy);
-		return;
-	}
+	try_do_strategy(cpp_console);
+	try_do_strategy(c_console);
+	try_do_strategy(dummy);
 
 	fprintf(stderr, "Unknown strategy: %s\n", GLOBAL_CONFIG.strategy);
 }

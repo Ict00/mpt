@@ -17,6 +17,7 @@ struct {
 } typedef strategy_t;
 
 extern strategy_t c_console;
+extern strategy_t cpp_console;
 extern strategy_t dummy;
 
 void init_strategies();

@@ -5,8 +5,10 @@
 
 #include "strategy_impl/c_console.h"
 #include "../utils.h"
+#include "strategy_impl/cpp_console.h"
 
 strategy_t c_console;
+strategy_t cpp_console;
 strategy_t dummy;
 
 void init_strategies() {
@@ -17,11 +19,18 @@ void init_strategies() {
 		{cct_done, "Executing Post CMD (if there is any)", 0}
 	};
 
+	static step_t cppc_steps[3] = {
+		{cpp_c_compile, "Building C++ files", 0},
+		{cct_link, "Linking...", 0},
+		{cct_done, "Executing Post CMD (if there is any)"}
+	};
+
 	static step_t dm_steps[1] = {
 		{cct_done, "Executing CMD", 0}
 	};
 
 	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=3};
+	cpp_console = (strategy_t){.name="C++: Console", .steps=cppc_steps, .steps_count=3};
 	dummy = (strategy_t){.name="Dummy", .steps=dm_steps, .steps_count=1};
 	
 }
