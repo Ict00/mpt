@@ -4,7 +4,6 @@
 
 typedef void (*listdir_exec)(char* path);
 
-char* get_file_name(char* path);
 bool ends_with(char* src, char* what);
 bool is_file(const char* path);
 bool is_dir(const char* path);

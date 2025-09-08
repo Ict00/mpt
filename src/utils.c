@@ -9,32 +9,6 @@
 #include <libgen.h>
 #include <unistd.h>
 
-char* get_file_name(char* path) {
-	char* filename_t = malloc(sizeof(char) * 255);
-	int b = 0;
-
-	for (int i = strlen(path)-1; path[i] != '/' && i >= 0; i--) {
-		filename_t[b] = path[i];
-		b++;
-	}
-
-	filename_t[b] = 0;
-	
-	char* filename = malloc(sizeof(char) * b);
-	int _b = b-1;
-
-	for (int i = 0; i < b; i++) {
-		filename[i] = filename_t[_b];
-		_b--;
-	}
-	
-	filename[b] = 0;
-
-	free(filename_t);
-
-	return filename;
-}
-
 bool ends_with(char *src, char *what) {
 	int b = strlen(what);
 
