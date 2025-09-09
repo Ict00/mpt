@@ -16,6 +16,10 @@ struct {
 	const char* name;
 } typedef strategy_t;
 
+extern strategy_t c_static_lib;
+extern strategy_t c_shared_lib;
+extern strategy_t cpp_static_lib;
+extern strategy_t cpp_shared_lib;
 extern strategy_t c_console;
 extern strategy_t cpp_console;
 extern strategy_t dummy;

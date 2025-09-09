@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 target CURRENT_TARGET;
-global_config GLOBAL_CONFIG;
+build_config GLOBAL_CONFIG;
 
 static bool is_space(char ch) {
 	return !(ch != ' ' && ch != '\t' && ch != '\n' && ch != '\r' && ch != ' ');
@@ -91,6 +91,11 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->post_cmd = fvalue;
 		return;
 	}
+	if (strcmp(fname, "pre_cmd") == 0 || strcmp(fname, "init_cmd") == 0) {
+		free(dest->pre_cmd);
+		dest->pre_cmd = fvalue;
+		return;
+	}
 	if (strcmp(fname, "binary_name") == 0 || strcmp(fname, "output") == 0) {
 		free(dest->binary_name);
 		dest->binary_name = fvalue;
@@ -99,6 +104,11 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 	if (strcmp(fname, "ldflags") == 0) {
 		free(dest->ldflags);
 		dest->ldflags = fvalue;
+		return;
+	}
+	if (strcmp(fname, "subprojects") == 0) {
+		free(dest->subprojects);
+		dest->subprojects = fvalue;
 		return;
 	}
 	if (strcmp(fname, "sources") == 0) {
@@ -154,9 +164,11 @@ static target* parse_target(char* text, int* pos) {
 	res->ldflags = strdup("-O3");
 	res->flags = strdup("-O3 -std=c23 -c");
 	res->post_cmd = strdup("");
+	res->pre_cmd = strdup("");
 	res->compiler = strdup("cc");
 	res->binary_name = strdup("program");
 	res->sources = strdup("src");
+	res->subprojects = strdup("");
 
 	char cwd[1024];
 
@@ -182,7 +194,11 @@ static target* parse_target(char* text, int* pos) {
 	return res;
 }
 
-void parse_cfg(char *config_text) {
+void parse_global_cfg(char *config_text) {
+	GLOBAL_CONFIG = parse_cfg(config_text);
+}
+
+build_config parse_cfg(char *config_text) {
 	int i = 0;
 	char* EMPTY;
 
@@ -209,7 +225,7 @@ void parse_cfg(char *config_text) {
 
 	free(EMPTY);
 	
-	GLOBAL_CONFIG = (global_config){
+	return (build_config){
 		.targets = targets,
 		.target_count = target_count,
 		.strategy = strategy

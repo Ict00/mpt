@@ -9,6 +9,15 @@
 #include <libgen.h>
 #include <unistd.h>
 
+void append_to_str(char **dest, const char *str) {
+	int new_length = strlen(*dest) + strlen(str) + 1;
+	char* new_dest = malloc(sizeof(char)*new_length);
+	strcpy(new_dest, *dest);
+	strcat(new_dest, str);
+	free(*dest);
+	*dest = new_dest;
+}
+
 bool ends_with(char *src, char *what) {
 	int b = strlen(what);
 
@@ -49,7 +58,7 @@ char* read_file(const char *file_name) {
 	return content;
 }
 
-void list_dir(char *path, listdir_exec function, bool recursive) {
+void list_dir(char *path, listdir_exec function, bool recursive, bool use_on_dirs) {
 	DIR *dir;
 	struct dirent *entry;
 
@@ -71,13 +80,15 @@ void list_dir(char *path, listdir_exec function, bool recursive) {
 
 		if (recursive) {
 			if (!is_file(npath)) {
-				list_dir(npath, function, recursive);
+				if (use_on_dirs)
+					function(npath);
+				list_dir(npath, function, recursive, use_on_dirs);	
 			}
 			else {
 				goto treat_as_file;
 			}
 		}
-		else if(is_file(npath)) {
+		else if(is_file(npath) || use_on_dirs) {
 			goto treat_as_file;
 		}
 

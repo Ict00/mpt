@@ -1,0 +1,36 @@
+[src]
+type="dir"
+
+[obj]
+type="dir"
+
+[Project]
+type="file"
+content="
+strategy=\"cpp_shared_lib\"
+
+[main]
+compiler=\"c++\"
+flags=\"-O3 -D_XOPEN_SOURCE=500 -std=c++23 -c\"
+ldflags=\"-O3\"
+sources=\"src\"
+post_cmd=\"rm obj/* -r\"
+"
+
+[src/sum.cpp]
+type="file"
+content="
+#include \"sum.h\"
+
+int sum(int a, int b) {
+	return a + b;
+}
+"
+
+[src/sum.h]
+type="file"
+content="
+#pragma once
+
+int sum(int a, int b);
+"

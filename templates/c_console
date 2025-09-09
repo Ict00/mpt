@@ -1,0 +1,29 @@
+[src]
+type="dir"
+
+[obj]
+type="dir"
+
+[Project]
+type="file"
+content="
+strategy=\"c_console\"
+
+[main]
+compiler=\"clang\"
+flags=\"-O3 -D_XOPEN_SOURCE=500 -std=c23 -c\"
+ldflags=\"-O3\"
+sources=\"src\"
+post_cmd=\"rm obj/* -r\"
+"
+
+[src/main.c]
+type="file"
+content="
+#include <stdio.h>
+
+int main() {
+	printf(\"Hello, World!\n\");
+	return 0;
+}
+"

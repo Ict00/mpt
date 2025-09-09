@@ -25,10 +25,6 @@ void compile_sf(char *l) {
 	compiled++;
 }
 
-void cct_done() {
-	system(CURRENT_TARGET.post_cmd);
-}
-
 void cct_compile() {
 	char buffer[PATH_MAX];
 	int bi = 0;
@@ -36,7 +32,7 @@ void cct_compile() {
 	for (; CURRENT_TARGET.sources[i] != 0; i++) {
 		if (CURRENT_TARGET.sources[i] == ':') {
 			buffer[bi] = 0;
-			list_dir(buffer, compile_sf, true);
+			list_dir(buffer, compile_sf, true, false);
 			bi = 0;
 			continue;
 		}
@@ -44,19 +40,21 @@ void cct_compile() {
 		buffer[bi] = CURRENT_TARGET.sources[i];
 		bi++;
 	}
+
 	if (CURRENT_TARGET.sources[i] == 0) {
 		buffer[bi] = 0;
-		list_dir(buffer, compile_sf, true);
+		list_dir(buffer, compile_sf, true, false);
 	}
 }
 
 void cct_link() {
 	char to_link[4096] = {0};
-	sprintf(to_link, "%s -o %s obj/*.o", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
+	sprintf(to_link, "%s -o %s obj/*", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
 	strcat(to_link, " ");
 	strcat(to_link, CURRENT_TARGET.ldflags);
-	int status = system(to_link);
 	
+	int status = system(to_link);
+
 	if (status != 0) {
 		fprintf(stderr, "*Error occured during linking; status code: %d*\n", status);
 		exit(status);

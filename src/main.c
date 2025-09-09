@@ -12,12 +12,82 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define MPT_VERSION "0"
+#define MPT_VERSION "1"
 #define try_do_strategy(strat) \
     if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
         do_strategy(strat); \
         return; \
     }
+
+FILE* template_file;
+
+static void tmplt(char* l) {
+	char* add_content = malloc(sizeof(char)*1);
+	add_content[0] = 0;
+	
+	if (is_dir(l)) {	
+		append_to_str(&add_content, "[");
+		append_to_str(&add_content, l);
+		append_to_str(&add_content, "]\ntype=\"dir\"\n\n");
+		
+		fputs(add_content, template_file);
+	}
+	else {
+		append_to_str(&add_content, "[");
+		append_to_str(&add_content, l);
+		append_to_str(&add_content, "]\ntype=\"file\"\ncontent=\"");
+
+		char* file_content = read_file(l);
+		char* new_file_content = malloc(sizeof(char)*1);
+		new_file_content[0] = 0;
+
+		for(int i = 0; file_content[i] != 0; i++) {
+			if (file_content[i] == '"') {
+				char t[3];
+				sprintf(t, "\\\"");
+				append_to_str(&new_file_content, t);
+			}
+			else {
+				char t[2];
+				sprintf(t, "%c", file_content[i]);
+				append_to_str(&new_file_content, t);
+			}
+		}
+
+		append_to_str(&add_content, new_file_content);
+		append_to_str(&add_content, "\"\n\n");
+
+		fputs(add_content, template_file);
+		free(new_file_content);
+	}
+	
+	free(add_content);
+}
+
+void make_template(int argc, char** args) {
+	if (argc != 2) {
+		printf("mpt help for help\n");
+		return;
+	}
+	
+	char* template_name = args[0];
+	char* template_dir = args[1];
+	
+	if ((template_file = fopen(template_name, "w")) == NULL) {
+		fprintf(stderr, "*Failed to create/write to the file '%s'*\n", template_name);
+		return;
+	}
+
+	if (!is_dir(template_dir)) {
+		fprintf(stderr, "*%s is not a directory*\n", template_dir);
+		return;
+	}
+	chdir(template_dir);
+
+	list_dir(".", tmplt, true, true);
+
+	fclose(template_file);
+}
 
 void help() {
 	printf("\x1b[1mMPT\x1b[0m Usage: mpt [command] [args]\n Commands:\n");
@@ -38,6 +108,7 @@ void help() {
 	printf("sources=\"dir1:dir2:dirn\"\n");
 	printf("output=\"...\"\n");
 	printf("post_cmd=\"...\"\n");
+	printf("init_cmd=\"...\"\n");
 	printf("[target_n]\n...\n\n");
 
 	printf(" Defaults for each parameter:\n\n");
@@ -48,6 +119,7 @@ void help() {
 	printf("sources=\"src\"\n");
 	printf("output=\"name of directory\"\n");
 	printf("post_cmd=\"\"\n\n");
+	printf("init_cmd=\"\"\n\n");
 
 	printf("\x1b[1mNOTE\x1b[0m:\n'obj' directory must exist (unless you use 'dummy' build strategy)\n");
 	printf("First parameter in any Project file must be 'strategy'\n");
@@ -68,7 +140,7 @@ void help() {
 
 void new(int argc, char** args) {
 	if (argc != 2) {
-		help();
+		printf("mpt help for help\n");
 		return;
 	}
 
@@ -76,18 +148,42 @@ void new(int argc, char** args) {
 	char* project_name = args[1];
 
 	char* home_dir;
-
-	if ((home_dir = getenv("HOME")) == NULL) {
-		fprintf(stderr, "*HOME environment variable is not set*\n");
-		exit(3);
-	}
-
+	
 	char template_location[PATH_MAX];
 	template_location[0] = 0;
 	
-	strcat(template_location, home_dir);
-	strcat(template_location, "/.config/mpt/");
-	strcat(template_location, template_name);
+	char buf1[512];
+	int status = 0;
+
+	if ((status = readlink("/proc/self/exe", buf1, 512) != -1)) {
+		char* last = strrchr(buf1, '/');
+		char* first = &buf1[0];
+
+		char* new_buf = malloc(sizeof(char) * (status+1));
+		int i = 0;
+
+		for (; first != last; first++) {
+			new_buf[i] = *first;
+			i++;
+		}
+
+		new_buf[i] = 0;
+
+		strcat(template_location, new_buf);
+		strcat(template_location, "/templates/");
+		strcat(template_location, template_name);
+
+		free(new_buf);
+	}
+	else if ((home_dir = getenv("HOME")) == NULL) {
+		fprintf(stderr, "*HOME environment variable is not set, alternative template path (binary dir)/templates doesn't exist*\n");
+		exit(3);
+	}
+	else {
+		strcat(template_location, home_dir);
+		strcat(template_location, "/.config/mpt/");
+		strcat(template_location, template_name);
+	}
 	
 	if (!is_file(template_location) || is_dir(template_location)) {
 		fprintf(stderr, "*Path '%s' is not a file/doesn't exist*\n", template_location);
@@ -154,7 +250,7 @@ void new(int argc, char** args) {
 
 void build(int argc, char** args) {
 	init_strategies();
-	parse_cfg(read_file("Project"));
+	parse_global_cfg(read_file("Project"));
 
 	if (argc == 0) {
 		CURRENT_TARGET = *GLOBAL_CONFIG.targets[0];	
@@ -173,6 +269,10 @@ void build(int argc, char** args) {
 		exit(3);
 	}
 success:
+	try_do_strategy(c_static_lib);
+	try_do_strategy(c_shared_lib);
+	try_do_strategy(cpp_static_lib);
+	try_do_strategy(cpp_shared_lib);
 	try_do_strategy(cpp_console);
 	try_do_strategy(c_console);
 	try_do_strategy(dummy);
@@ -206,6 +306,11 @@ int main(int argc, char** args) {
 
 	if (strcmp(args[1], "new") == 0) {
 		new(argc-2, args+2);
+		return 0;
+	}
+
+	if (strcmp(args[1], "template") == 0) {
+		make_template(argc-2, args+2);
 		return 0;
 	}
 

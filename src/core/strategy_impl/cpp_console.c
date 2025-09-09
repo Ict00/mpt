@@ -10,7 +10,7 @@
 int compiled2 = 0;
 
 void ccp_c_compile_sf(char *l) {
-	if (!ends_with(l, ".c"))
+	if (!ends_with(l, ".cpp"))
 		return;
 
 	char cmd[1024];
@@ -33,7 +33,7 @@ void cpp_c_compile() {
 	for (; CURRENT_TARGET.sources[i] != 0; i++) {
 		if (CURRENT_TARGET.sources[i] == ':') {
 			buffer[bi] = 0;
-			list_dir(buffer, ccp_c_compile_sf, true);
+			list_dir(buffer, ccp_c_compile_sf, true, false);
 			bi = 0;
 			continue;
 		}
@@ -43,6 +43,6 @@ void cpp_c_compile() {
 	}
 	if (CURRENT_TARGET.sources[i] == 0) {
 		buffer[bi] = 0;
-		list_dir(buffer, ccp_c_compile_sf, true);
+		list_dir(buffer, ccp_c_compile_sf, true, false);
 	}
 }
