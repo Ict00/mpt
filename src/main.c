@@ -13,11 +13,7 @@
 #include <sys/stat.h>
 
 #define MPT_VERSION "1"
-#define try_do_strategy(strat) \
-    if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
-        do_strategy(strat); \
-        return; \
-    }
+
 
 FILE* template_file;
 
@@ -269,15 +265,7 @@ void build(int argc, char** args) {
 		exit(3);
 	}
 success:
-	try_do_strategy(c_static_lib);
-	try_do_strategy(c_shared_lib);
-	try_do_strategy(cpp_static_lib);
-	try_do_strategy(cpp_shared_lib);
-	try_do_strategy(cpp_console);
-	try_do_strategy(c_console);
-	try_do_strategy(dummy);
-
-	fprintf(stderr, "Unknown strategy: %s\n", GLOBAL_CONFIG.strategy);
+	build_with_target(CURRENT_TARGET);
 }
 
 int main(int argc, char** args) {

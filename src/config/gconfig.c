@@ -106,11 +106,6 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->ldflags = fvalue;
 		return;
 	}
-	if (strcmp(fname, "subprojects") == 0) {
-		free(dest->subprojects);
-		dest->subprojects = fvalue;
-		return;
-	}
 	if (strcmp(fname, "sources") == 0) {
 		free(dest->sources);
 		dest->sources = fvalue;
@@ -168,7 +163,6 @@ static target* parse_target(char* text, int* pos) {
 	res->compiler = strdup("cc");
 	res->binary_name = strdup("program");
 	res->sources = strdup("src");
-	res->subprojects = strdup("");
 
 	char cwd[1024];
 

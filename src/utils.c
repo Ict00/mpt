@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "config/gconfig.h"
 #include <linux/limits.h>
 #include <string.h>
 #include <stdio.h>
@@ -8,6 +9,13 @@
 #include <dirent.h>
 #include <libgen.h>
 #include <unistd.h>
+#include "core/strategy.h"
+
+#define try_do_strategy(strat) \
+    if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
+        do_strategy(strat); \
+        return; \
+    }
 
 void append_to_str(char **dest, const char *str) {
 	int new_length = strlen(*dest) + strlen(str) + 1;
@@ -154,4 +162,33 @@ void out_status(const char *msg, char *bar, int max, int amount) {
 	free(bar);
 	printf("\x1b[KStep %d out of %d\n", amount, max);
 	fflush(stdout);
+}
+
+void free_config(build_config conf) {
+	for (int i = 0; i < conf.target_count; i++) {
+		target* current = conf.targets[i];
+		free(current->sources);
+		free(current->binary_name);
+		free(current->name);
+		free(current->compiler);
+		free(current->flags);
+		free(current->ldflags);
+		free(current->post_cmd);
+		free(current->pre_cmd);
+		free(current);
+	}
+
+	free(conf.targets);
+}
+
+void build_with_target(target t) {
+	try_do_strategy(c_static_lib);
+	try_do_strategy(c_shared_lib);
+	try_do_strategy(cpp_static_lib);
+	try_do_strategy(cpp_shared_lib);
+	try_do_strategy(cpp_console);
+	try_do_strategy(c_console);
+	try_do_strategy(dummy);
+
+	fprintf(stderr, "Unknown strategy: %s\n", GLOBAL_CONFIG.strategy);
 }

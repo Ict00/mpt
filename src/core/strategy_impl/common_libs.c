@@ -6,7 +6,7 @@
 
 void link_into_lib() {
 	char cmd[4096];
-	sprintf(cmd, "ar rcs %s.a obj/*.o", CURRENT_TARGET.binary_name);
+	sprintf(cmd, "ar rcs %s obj/*.o", CURRENT_TARGET.binary_name);
 	
 	int status = system(cmd);
 	
@@ -25,7 +25,7 @@ void init_for_shared() {
 
 void link_into_shared_lib() {
 	char cmd[4096];
-	sprintf(cmd, "%s -shared -o %s.so obj/*.o", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
+	sprintf(cmd, "%s -shared -o %s obj/*.o", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
 	
 	int status = system(cmd);
 	
