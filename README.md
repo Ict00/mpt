@@ -8,7 +8,7 @@ A tool I've made for project management (Creating/Building)
 - Project templates
 
 ### Requirements
-- Compiler that supports C23
+- Compiler that supports C99
 - Make
 
 ### Usage

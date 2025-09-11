@@ -2,7 +2,7 @@ strategy="c_console"
 
 [main]
 compiler="clang"
-flags="-O3 -D_XOPEN_SOURCE=500 -std=c23 -c"
+flags="-O3 -D_XOPEN_SOURCE=500 -std=c99 -c"
 ldflags="-O3"
 sources="src"
 output="mpt"
