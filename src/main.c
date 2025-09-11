@@ -244,7 +244,7 @@ void new(int argc, char** args) {
 		fclose(fptr);
 	}
 
-	printf("%s", project_name); fflush(stdout);
+	printf("\x1b[1mMPT\x1b[0m\nProject '%s' initialized using template '%s'\n", project_name, template_name); fflush(stdout);
 }
 
 void build(int argc, char** args) {
