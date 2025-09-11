@@ -19,44 +19,50 @@ strategy_t dummy;
 
 void init_strategies() {
 
-	static step_t cc_steps[4] = {
+	static step_t cc_steps[5] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{cct_compile, "Building C files", 0},
 		{cct_link, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)", 0}
 	};
 
-	static step_t cppc_steps[4] = {
+	static step_t cppc_steps[5] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{cpp_c_compile, "Building C++ files", 0},
 		{cct_link, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 	
-	static step_t cstl_steps[4] = {
+	static step_t cstl_steps[5] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{cct_compile, "Building C files", 0},
 		{link_into_lib, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 	
-	static step_t cppstl_steps[4] = {
+	static step_t cppstl_steps[5] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{cpp_c_compile, "Building C++ files", 0},
 		{link_into_lib, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
-	static step_t cppshl_steps[5] = {
+	static step_t cppshl_steps[6] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{init_for_shared, "Editing 'flags' field", 0},
 		{cpp_c_compile, "Building C++ files", 0},
 		{link_into_shared_lib, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
-	static step_t cshl_steps[5] = {
+	static step_t cshl_steps[6] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{common_includes, "Adding includes", 0},
 		{init_for_shared, "Editing 'flags' field", 0},
 		{cct_compile, "Building C files", 0},
 		{link_into_shared_lib, "Linking...", 0},
@@ -67,12 +73,12 @@ void init_strategies() {
 		{common_done, "Executing CMD", 0}
 	};
 
-	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=4};
-	c_static_lib = (strategy_t){.name="C: Static Lib", .steps=cstl_steps, .steps_count=4};
-	c_shared_lib = (strategy_t){.name="C: Shared Lib", .steps=cshl_steps, .steps_count=5};
-	cpp_static_lib = (strategy_t){.name="C++: Static Lib", .steps=cppstl_steps, .steps_count=4};
-	cpp_shared_lib = (strategy_t){.name="C++: Shared Lib", .steps=cppshl_steps, .steps_count=5};
-	cpp_console = (strategy_t){.name="C++: Console", .steps=cppc_steps, .steps_count=4};
+	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=5};
+	c_static_lib = (strategy_t){.name="C: Static Lib", .steps=cstl_steps, .steps_count=5};
+	c_shared_lib = (strategy_t){.name="C: Shared Lib", .steps=cshl_steps, .steps_count=6};
+	cpp_static_lib = (strategy_t){.name="C++: Static Lib", .steps=cppstl_steps, .steps_count=5};
+	cpp_shared_lib = (strategy_t){.name="C++: Shared Lib", .steps=cppshl_steps, .steps_count=6};
+	cpp_console = (strategy_t){.name="C++: Console", .steps=cppc_steps, .steps_count=5};
 	dummy = (strategy_t){.name="Dummy", .steps=dm_steps, .steps_count=1};
 
 }

@@ -10,6 +10,7 @@ struct {
 	char* binary_name;
 	char* post_cmd;
 	char* pre_cmd;
+	char* includes;
 	char* name;
 	char* sources;
 } typedef target;

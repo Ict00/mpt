@@ -106,6 +106,11 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->ldflags = fvalue;
 		return;
 	}
+	if (strcmp(fname, "includes") == 0) {
+		free(dest->includes);
+		dest->includes = fvalue;
+		return;
+	}
 	if (strcmp(fname, "sources") == 0) {
 		free(dest->sources);
 		dest->sources = fvalue;
@@ -160,6 +165,7 @@ static target* parse_target(char* text, int* pos) {
 	res->flags = strdup("-O3 -std=c23 -c");
 	res->post_cmd = strdup("");
 	res->pre_cmd = strdup("");
+	res->includes = strdup("");
 	res->compiler = strdup("cc");
 	res->binary_name = strdup("program");
 	res->sources = strdup("src");
