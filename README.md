@@ -4,7 +4,7 @@ A tool I've made for project management (Creating/Building)
 
 ### Features
 - Project configuration
-- Different build strategies [`dummy`, `c_console`, `cpp_console`]. The list can (and **will**) change over time
+- Different build strategies [`dummy`, `c_console`, `cpp_console`, `c_static_lib`, `c_shared_lib`, `cpp_static_lib`, `cpp_shared_lib`]. The list can (and **will**) change over time
 - Project templates
 
 ### Requirements
@@ -15,11 +15,12 @@ A tool I've made for project management (Creating/Building)
 MPT Usage: mpt \[command] \[args]
 
 #### Commands:
-| Command                             | Description                      |
-|-------------------------------------|----------------------------------|
-| info                                | - Show current version           |
-| build   \[target]                   | - Build target                   |
-| new     \[template] \[project name] | - Make new project from template |
+| Command                             | Description                        |
+|-------------------------------------|------------------------------------|
+| info                                | - Show current version             |
+| build   \[target]                   | - Build target                     |
+| template \[template_name] \[dir]    | - Make template based on directory |
+| new     \[template] \[project name] | - Make new project from template   |
 
 #### Project configuration:
 * Project configuration is stored in 'Project' file
@@ -31,8 +32,10 @@ compiler="..."
 flags="..."
 ldflags="..."
 sources="dir1:dir2:dirn"
+includes="dir1:dir2:dirn"
 output="..."
 post_cmd="..."
+init_cmd="..."
 [target_n]
 ...
 ```
@@ -43,8 +46,10 @@ compiler="cc"
 flags="-O3 -std=c23 -c"
 ldflags="-O3"
 sources="src"
+includes="src"
 output="name of directory"
 post_cmd=""
+init_cmd=""
 ```
 
 > NOTE:
@@ -52,7 +57,7 @@ post_cmd=""
 > * First parameter in any Project file must be 'strategy'
 
 #### Templates:
-* Templates are stored in ~/.config/mpt/
+* Templates are stored in '/path/to/mpt/binary/templates' OR ~/.config/mpt/
 * **Template** syntax:
 ```ini
 [dir1]
