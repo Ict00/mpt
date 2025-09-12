@@ -82,3 +82,46 @@ content="..."
 ```
 > NOTE:
 > * Directories are created EXACTLY in the same order as specified in template, not recursively
+
+> NOTE:
+> **MPT V1** makes process of making templates way easier using `mpt template` command.
+> 
+> Let's say you have a directory with this structure and you want to turn it into template:
+> ```
+> project1
+> ├── obj
+> ├── Project
+> └── src
+>       ├── main.c
+>       └── very_useful_functionality
+>           ├── test.c
+>           └── test.h
+> ```
+> Now you can just type this command:
+> ```bash
+> $ mpt new my_awesome_template project1
+> ```
+> and MPT will create `my_awesome_template` file with ready-to-use project template
+
+### Quick Start
+> NOTE: Windows is not supported; Mac OS is not test
+
+#### Step 1. Clone the repository
+```bash
+$ git clone https://github.com/Ict00/mpt
+```
+
+#### Step 2. Build it using `Make`
+```bash
+$ cd mpt && make
+```
+> NOTE: If you don't have `clang` installed, change '`CC`' field in `Makefile` to any other compiler you have (e.g, `cc`)
+
+#### Step 3 (Optional). Put `mpt` binary (and `templates` directory) into directory that's listed in `PATH` variable (for better experience)
+#### Step 4. Use it. Here's example of creating `c_console` project:
+```bash
+$ mpt new c_console my_awesome_c_project
+$ cd my_awesome_c_project
+$ mpt build
+$ ./my_awesome_c_project # <- output binary (name and location can be changed in 'Project' file)
+```
