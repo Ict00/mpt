@@ -204,6 +204,18 @@ void new(int argc, char** args) {
 	printf("\x1b[1mMPT\x1b[0m\nProject '%s' initialized using template '%s'\n", project_name, template_name); fflush(stdout);
 }
 
+void get_current_target(char* desired) {
+	for (int i = 0; i < GLOBAL_CONFIG.target_count; i++) {
+		if(strcmp(desired, GLOBAL_CONFIG.targets[i]->name) == 0) {
+			CURRENT_TARGET = *GLOBAL_CONFIG.targets[i];
+			return;
+		}
+	}
+
+	fprintf(stderr, "*Target '%s' not found*\n", desired);
+	exit(3);
+}
+
 void generate_cf(int argc, char** args) {
 	parse_global_cfg(read_file("Project"));
 
@@ -211,20 +223,8 @@ void generate_cf(int argc, char** args) {
 		CURRENT_TARGET = *GLOBAL_CONFIG.targets[0];
 	}
 	else {
-		char* desired = args[0];
-
-		for (int i = 0; i < GLOBAL_CONFIG.target_count; i++) {
-			if(strcmp(desired, GLOBAL_CONFIG.targets[i]->name) == 0) {
-				CURRENT_TARGET = *GLOBAL_CONFIG.targets[i];
-				goto success;
-			}
-		}
-
-		fprintf(stderr, "*Target '%s' not found*\n", desired);
-		exit(3);
+		get_current_target(args[0]);
 	}
-success:
-	(void)0; // This removes quite annoying warning
 
 	FILE* file = fopen("compile_flags.txt", "w");
 	if (!file) {
@@ -278,19 +278,9 @@ void build(int argc, char** args) {
 		CURRENT_TARGET = *GLOBAL_CONFIG.targets[0];	
 	}
 	else {
-		char* desired = args[0];
-
-		for (int i = 0; i < GLOBAL_CONFIG.target_count; i++) {
-			if(strcmp(desired, GLOBAL_CONFIG.targets[i]->name) == 0) {
-				CURRENT_TARGET = *GLOBAL_CONFIG.targets[i];
-				goto success;
-			}
-		}
-
-		fprintf(stderr, "*Target '%s' not found*\n", desired);
-		exit(3);
+		get_current_target(args[0]);
 	}
-success:
+
 	build_with_target(CURRENT_TARGET);
 }
 
