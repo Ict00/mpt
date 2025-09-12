@@ -15,12 +15,14 @@ A tool I've made for project management (Creating/Building)
 MPT Usage: mpt \[command] \[args]
 
 #### Commands:
-| Command                             | Description                        |
-|-------------------------------------|------------------------------------|
-| info                                | - Show current version             |
-| build   \[target]                   | - Build target                     |
-| template \[template_name] \[dir]    | - Make template based on directory |
-| new     \[template] \[project name] | - Make new project from template   |
+| Command                             | Description                                                           |
+|-------------------------------------|-----------------------------------------------------------------------|
+| info                                | - Show current version                                                |
+| help                                | - Help command                                                        |
+| gen-cf \[target]                    | - Generate 'compile_flags.txt' based on 'flags' and 'includes' fields |
+| build   \[target]                   | - Build target                                                        |
+| template \[template_name] \[dir]    | - Make template based on directory                                    |
+| new     \[template] \[project name] | - Make new project from template                                      |
 
 #### Project configuration:
 * Project configuration is stored in 'Project' file

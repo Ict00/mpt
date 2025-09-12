@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define MPT_VERSION "1"
+#define MPT_VERSION "2 (DEV)"
 
 
 FILE* template_file;
@@ -88,53 +88,10 @@ void make_template(int argc, char** args) {
 void help() {
 	printf("\x1b[1mMPT\x1b[0m Usage: mpt [command] [args]\n Commands:\n");
 	printf("%-34s - %s\n", "info", "Show current version");
+	printf("%-34s - %s\n", "gen-cf [target]", "Generate 'compile_flags.txt' based on 'flags' and 'includes' fields");
 	printf("%-34s - %s\n", "build [target]", "Build target");
 	printf("%-34s - %s\n", "template [template_name] [dir]", "Make template based on directory");
 	printf("%-34s - %s\n", "new [template] [project name]", "Make new project from template");
-
-	printf("  Project configuration:\n");
-	printf("Project configuration is stored in 'Project' file\n");
-
-	printf(" \x1b[1mProject file syntax\x1b[0m:\n\n");
-
-	printf("strategy=\"...\"\n");
-	printf("[target_1]\n");
-	printf("compiler=\"...\"\n");
-	printf("flags=\"...\"\n");
-	printf("ldflags=\"...\"\n");
-	printf("sources=\"dir1:dir2:dirn\"\n");
-	printf("includes=\"dir1:dir2:dirn\"\n");
-	printf("output=\"...\"\n");
-	printf("post_cmd=\"...\"\n");
-	printf("init_cmd=\"...\"\n");
-	printf("[target_n]\n...\n\n");
-
-	printf(" Defaults for each parameter:\n\n");
-
-	printf("compiler=\"cc\"\n");
-	printf("flags=\"-O3 -std=c23 -c\"\n");
-	printf("ldflags=\"-O3\"\n");
-	printf("sources=\"src\"\n");
-	printf("includes=\"\"\n");
-	printf("output=\"name of directory\"\n");
-	printf("post_cmd=\"\"\n\n");
-	printf("init_cmd=\"\"\n\n");
-
-	printf("\x1b[1mNOTE\x1b[0m:\n'obj' directory must exist (unless you use 'dummy' build strategy)\n");
-	printf("First parameter in any Project file must be 'strategy'\n");
-
-	printf("  Templates:\n");
-	printf("Templates are stored in '/path/to/mpt/binary/templates' OR ~/.config/mpt/\n");
-	
-	printf(" \x1b[1mTemplate syntax\x1b[0m:\n\n");
-	printf("[dir1]\ntype=\"dir\"\n\n");
-	printf("[dir1/dir2]\ntype=\"dir\"\n\n");
-	printf("[dirN]\ntype=\"dir\"\n\n");
-	printf("[file1]\ntype=\"file\"\ncontent=\"...\"\n");
-	printf("[dir1/file1]\ntype=\"file\"\ncontent=\"...\"\n");
-	printf("[dirN/.../fileN]\ntype=\"file\"\ncontent=\"...\"\n\n");
-	
-	printf("\x1b[1mNOTE\x1b[0m:\nDirectories are created EXACTLY in the same order as specified in template, not recursively\n");
 }
 
 void new(int argc, char** args) {
@@ -247,6 +204,72 @@ void new(int argc, char** args) {
 	printf("\x1b[1mMPT\x1b[0m\nProject '%s' initialized using template '%s'\n", project_name, template_name); fflush(stdout);
 }
 
+void generate_cf(int argc, char** args) {
+	parse_global_cfg(read_file("Project"));
+
+	if (argc == 0) {
+		CURRENT_TARGET = *GLOBAL_CONFIG.targets[0];
+	}
+	else {
+		char* desired = args[0];
+
+		for (int i = 0; i < GLOBAL_CONFIG.target_count; i++) {
+			if(strcmp(desired, GLOBAL_CONFIG.targets[i]->name) == 0) {
+				CURRENT_TARGET = *GLOBAL_CONFIG.targets[i];
+				goto success;
+			}
+		}
+
+		fprintf(stderr, "*Target '%s' not found*\n", desired);
+		exit(3);
+	}
+success:
+	(void)0; // This removes quite annoying warning
+
+	FILE* file = fopen("compile_flags.txt", "w");
+	if (!file) {
+		fprintf(stderr, "*Failed to create '.clangd'*\n");
+		exit(3);
+	}
+
+	char* cf_content = malloc(sizeof(char));
+	cf_content[0] = 0;
+	
+	char buf[256];
+	int b = 0;
+
+	for (int i = 0; CURRENT_TARGET.includes[i] != 0; i++) {
+		if (CURRENT_TARGET.includes[i] == ':' || CURRENT_TARGET.includes[i+1] == 0) {
+			if (CURRENT_TARGET.includes[i+1] == 0) {
+				buf[b] = CURRENT_TARGET.includes[i];
+				b++;
+			}
+			buf[b] = 0;
+			append_to_str(&cf_content, "-I");
+			append_to_str(&cf_content, buf);
+			append_to_str(&cf_content, "\n");
+			b = 0;
+			continue;
+		}
+
+		buf[b] = CURRENT_TARGET.includes[i];
+		b++;
+	}
+	
+	fprintf(file, "%s", cf_content);
+
+	for (int i = 0; CURRENT_TARGET.flags[i] != 0; i++) {
+		if (CURRENT_TARGET.flags[i] == ' ') {
+			fprintf(file, "\n");
+			continue;
+		}
+
+		fprintf(file, "%c", CURRENT_TARGET.flags[i]);
+	}
+
+	fclose(file);
+}
+
 void build(int argc, char** args) {
 	init_strategies();
 	parse_global_cfg(read_file("Project"));
@@ -297,6 +320,11 @@ int main(int argc, char** args) {
 
 	if (strcmp(args[1], "new") == 0) {
 		new(argc-2, args+2);
+		return 0;
+	}
+
+	if (strcmp(args[1], "gen-cf") == 0) {
+		generate_cf(argc-2, args+2);
 		return 0;
 	}
 
