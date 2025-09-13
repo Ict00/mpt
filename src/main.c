@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define MPT_VERSION "2"
+#define MPT_VERSION "3 (DEV)"
 
 
 FILE* template_file;
@@ -90,6 +90,7 @@ void help() {
 	printf("%-34s - %s\n", "info", "Show current version");
 	printf("%-34s - %s\n", "gen-cf [target]", "Generate 'compile_flags.txt' based on 'flags' and 'includes' fields");
 	printf("%-34s - %s\n", "build [target]", "Build target");
+	printf("%-34s - %s\n", "run [target]", "Build and run target");
 	printf("%-34s - %s\n", "template [template_name] [dir]", "Make template based on directory");
 	printf("%-34s - %s\n", "new [template] [project name]", "Make new project from template");
 }
@@ -284,6 +285,17 @@ void build(int argc, char** args) {
 	build_with_target(CURRENT_TARGET);
 }
 
+void run(int argc, char** args) {
+	build(argc, args);
+	char* cmd = malloc(sizeof(char));
+	cmd[0] = 0;
+	append_to_str(&cmd, "./");
+	append_to_str(&cmd, CURRENT_TARGET.binary_name);
+	
+	system(cmd);
+	free(cmd);
+}
+
 int main(int argc, char** args) {
 	if (args == 0) return -90;
 
@@ -304,6 +316,11 @@ int main(int argc, char** args) {
 
 	if (strcmp(args[1], "build") == 0) {
 		build(argc-2, args+2);
+		return 0;
+	}
+
+	if (strcmp(args[1], "run") == 0) {
+		run(argc-2, args+2);
 		return 0;
 	}
 

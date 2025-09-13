@@ -101,5 +101,4 @@ void do_strategy(strategy_t strategy) {
 
 		fflush(stdout);
 	}
-	exit(0);
 }

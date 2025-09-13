@@ -21,6 +21,7 @@ MPT Usage: mpt \[command] \[args]
 | help                                | - Help command                                                        |
 | gen-cf \[target]                    | - Generate 'compile_flags.txt' based on 'flags' and 'includes' fields |
 | build   \[target]                   | - Build target                                                        |
+| run   \[target]                     | - Build and run target                                                |
 | template \[template_name] \[dir]    | - Make template based on directory                                    |
 | new     \[template] \[project name] | - Make new project from template                                      |
 > TIP: if you don't need any output (besides errors) to be shown, add `--silent` flag at the end of command
