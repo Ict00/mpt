@@ -23,7 +23,7 @@ MPT Usage: mpt \[command] \[args]
 | build   \[target]                   | - Build target                                                        |
 | template \[template_name] \[dir]    | - Make template based on directory                                    |
 | new     \[template] \[project name] | - Make new project from template                                      |
-
+> TIP: if you don't need any output (besides errors) to be shown, add `--silent` flag at the end of command
 #### Project configuration:
 * Project configuration is stored in 'Project' file
 * **Project file** syntax:
@@ -34,6 +34,7 @@ compiler="..."
 flags="..."
 ldflags="..."
 sources="dir1:dir2:dirn"
+subprojects="dir1:dir2:dirn"
 includes="dir1:dir2:dirn"
 output="..."
 post_cmd="..."
@@ -49,6 +50,7 @@ flags="-O3 -std=c23 -c"
 ldflags="-O3"
 sources="src"
 includes=""
+subprojects=""
 output="name of directory"
 post_cmd=""
 init_cmd=""
@@ -106,7 +108,7 @@ content="..."
 > and MPT will create `my_awesome_template` file with ready-to-use project template
 
 ### Quick Start
-> NOTE: Windows is not supported; Mac OS is not test
+> NOTE: Windows is not supported; Mac OS is not tested
 
 #### Step 1. Clone the repository
 ```bash
