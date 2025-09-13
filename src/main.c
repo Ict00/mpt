@@ -12,7 +12,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define MPT_VERSION "2 (DEV)"
+#define MPT_VERSION "2"
 
 
 FILE* template_file;
