@@ -1,5 +1,4 @@
 #include "c_console.h"
-#include "string.h"
 #include "../../utils.h"
 #include "../../config/gconfig.h"
 #include <linux/limits.h>
@@ -49,9 +48,7 @@ void cct_compile() {
 
 void cct_link() {
 	char to_link[4096] = {0};
-	sprintf(to_link, "%s -o %s obj/*", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name);
-	strcat(to_link, " ");
-	strcat(to_link, CURRENT_TARGET.ldflags);
+	sprintf(to_link, "%s -o %s obj/* %s", CURRENT_TARGET.compiler, CURRENT_TARGET.binary_name, CURRENT_TARGET.ldflags);
 	
 	int status = system(to_link);
 

@@ -19,16 +19,18 @@ strategy_t dummy;
 
 void init_strategies() {
 
-	static step_t cc_steps[5] = {
+	static step_t cc_steps[6] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{build_subprojects, "Building subprojects...", 0},
 		{common_includes, "Adding includes", 0},
 		{cct_compile, "Building C files", 0},
 		{cct_link, "Linking...", 0},
 		{common_done, "Executing Post CMD (if there is any)", 0}
 	};
 
-	static step_t cppc_steps[5] = {
+	static step_t cppc_steps[6] = {
 		{common_start, "Executing Init CMD (if there is any)", 0},
+		{build_subprojects, "Building subprojects...", 0},
 		{common_includes, "Adding includes", 0},
 		{cpp_c_compile, "Building C++ files", 0},
 		{cct_link, "Linking...", 0},
@@ -73,28 +75,31 @@ void init_strategies() {
 		{common_done, "Executing CMD", 0}
 	};
 
-	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=5};
+	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=6};
 	c_static_lib = (strategy_t){.name="C: Static Lib", .steps=cstl_steps, .steps_count=5};
 	c_shared_lib = (strategy_t){.name="C: Shared Lib", .steps=cshl_steps, .steps_count=6};
 	cpp_static_lib = (strategy_t){.name="C++: Static Lib", .steps=cppstl_steps, .steps_count=5};
 	cpp_shared_lib = (strategy_t){.name="C++: Shared Lib", .steps=cppshl_steps, .steps_count=6};
-	cpp_console = (strategy_t){.name="C++: Console", .steps=cppc_steps, .steps_count=5};
+	cpp_console = (strategy_t){.name="C++: Console", .steps=cppc_steps, .steps_count=6};
 	dummy = (strategy_t){.name="Dummy", .steps=dm_steps, .steps_count=1};
 
 }
 
 void do_strategy(strategy_t strategy) {
-	printf("\x1b[1mMPT\x1b[0m\nBuilding with '%s'\n\n\n\n", strategy.name);
+	if (!silent)
+		printf("\x1b[1mMPT\x1b[0m\nBuilding with '%s'\n\n\n\n", strategy.name);
 	for (int i = 0; i < strategy.steps_count; ++i) {
 		char* _bar = bar(30, strategy.steps_count, i);
 		out_status(strategy.steps[i].description, _bar, strategy.steps_count, i+1);
 		strategy.steps[i].exec();
 		usleep(strategy.steps[i].timeout*10000);	
 	}
-	char* _bar = bar(30, 1, 1);
-	printf("\x1b[K\x1b[2A\x1b[200D%s\n\x1b[KDone!\n", _bar);
-	free(_bar);
-	
-	fflush(stdout);
+	if (!silent) {
+		char* _bar = bar(30, 1, 1);
+		printf("\x1b[K\x1b[2A\x1b[200D%s\n\x1b[KDone!\n", _bar);
+		free(_bar);
+
+		fflush(stdout);
+	}
 	exit(0);
 }

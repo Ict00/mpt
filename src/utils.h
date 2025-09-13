@@ -3,6 +3,8 @@
 #include "config/gconfig.h"
 #include <stdbool.h> 
 
+extern bool silent;
+
 typedef void (*listdir_exec)(char* path);
 
 void append_to_str(char** dest, const char* str);

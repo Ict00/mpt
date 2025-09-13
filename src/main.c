@@ -287,6 +287,11 @@ void build(int argc, char** args) {
 int main(int argc, char** args) {
 	if (args == 0) return -90;
 
+	if (strcmp(args[argc-1], "--silent") == 0) {
+		silent = true;
+		argc--;
+	}
+
 	if (argc == 1) {
 		printf("%s help for help\n", args[0]);
 		return 0;
@@ -322,8 +327,9 @@ int main(int argc, char** args) {
 		make_template(argc-2, args+2);
 		return 0;
 	}
-
-	printf("%s help for help\n", args[0]);	
+	
+	if (!silent)
+		printf("%s help for help\n", args[0]);	
 
 	return 0;
 }

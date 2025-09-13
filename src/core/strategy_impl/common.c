@@ -3,6 +3,7 @@
 #include <linux/limits.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <stdio.h>
 #include "../../config/gconfig.h"
 #include "../../utils.h"
 
@@ -12,6 +13,60 @@ void common_done() {
 
 void common_start() {
 	system(CURRENT_TARGET.pre_cmd);
+}
+
+void build_subprojects() {
+	char original_path[PATH_MAX];
+
+	if (getcwd(original_path, PATH_MAX) != NULL) {
+		char path[256];
+		int b = 0;
+
+		for (int i = 0; CURRENT_TARGET.subprojects[i] != 0; i++) {
+			if (CURRENT_TARGET.subprojects[i] == ':' || CURRENT_TARGET.subprojects[i+1] == 0) {
+				if (CURRENT_TARGET.subprojects[i+1] == 0) {
+					path[b] = CURRENT_TARGET.subprojects[i];
+					b++;
+				}
+				
+				path[b] = 0;
+				b = 0;
+				
+				if (!is_dir(path)) {
+					fprintf(stderr, "*Failed to build subprojects: Path '%s' is not a directory/doesn't exist*\n", path);
+					exit(-1);
+				}
+				
+				chdir(path);
+				char buf1[512];
+				int status = 0;
+
+				if((status = readlink("/proc/self/exe", buf1, 512)) == -1) {
+					fprintf(stderr, "*Failed to build subprojects: Failed to get MPT binary's location*\n");
+					exit(-1);
+				}
+
+				char cmd[1024];
+				sprintf(cmd, "%s build --silent", buf1);
+				
+				if(system(cmd) != 0) {
+					chdir(original_path);
+					exit(-1);
+				}
+
+				chdir(original_path);
+
+				continue;
+			}
+
+			path[b] = CURRENT_TARGET.subprojects[i];
+			b++;
+		}
+	}
+	else {
+		fprintf(stderr, "*Failed to build subprojects: Unable to get cwd*\n");
+		exit(-1);
+	}
 }
 
 void common_includes() {

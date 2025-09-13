@@ -11,6 +11,7 @@ struct {
 	char* post_cmd;
 	char* pre_cmd;
 	char* includes;
+	char* subprojects;
 	char* name;
 	char* sources;
 } typedef target;

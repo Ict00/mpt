@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include "core/strategy.h"
 
+bool silent = false;
+
 #define try_do_strategy(strat) \
     if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
         do_strategy(strat); \
@@ -156,6 +158,8 @@ char* bar(int length, int max_amount, int amount) {
 }
 
 void out_status(const char *msg, char *bar, int max, int amount) {
+	if (silent) return;
+
 	printf("\x1b[3A\x1b[200D");
 	printf("\x1b[K%s\n", msg);
 	printf("\x1b[K%s\n", bar);
