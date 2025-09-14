@@ -62,7 +62,8 @@ init_cmd=""
 > * First parameter in any Project file must be 'strategy'
 
 #### Templates:
-* Templates are stored in '/path/to/mpt/binary/templates' OR ~/.config/mpt/
+* Templates are stored in '/path/to/mpt/binary/templates'
+* In this repository, there are such templates as: `c_console`, `cpp_console` `c_shared_lib`, `cpp_shared_lib`, `c_static_lib`, `cpp_static_lib`, `c_raylib`
 * **Template** syntax:
 ```ini
 [dir1]

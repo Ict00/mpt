@@ -1,0 +1,43 @@
+[./src]
+type="dir"
+
+[./src/main.c]
+type="file"
+content="#include <stdio.h>
+#include <raylib.h>
+
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
+
+int main() {
+	InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, \"RayLib Project\");
+	
+	while (!WindowShouldClose()) {
+		BeginDrawing();
+		
+		ClearBackground(RAYWHITE);
+		DrawText(\"Hello, World!\", 0, 0, 20, BLACK);
+
+		EndDrawing();
+	}
+
+	CloseWindow();
+	return 0;
+}
+"
+
+[./obj]
+type="dir"
+
+[./Project]
+type="file"
+content="strategy=\"c_console\"
+
+[main]
+compiler=\"clang\"
+flags=\"-O3 -std=c23 -c\"
+ldflags=\"-O3 -lraylib\"
+sources=\"src\"
+post_cmd=\"rm obj/* -r\"
+"
+

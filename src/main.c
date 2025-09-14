@@ -11,7 +11,7 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
-#define MPT_VERSION "3 (DEV)"
+#define MPT_VERSION "3"
 
 
 FILE* template_file;
