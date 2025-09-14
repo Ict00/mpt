@@ -109,7 +109,10 @@ content="..."
 > and MPT will create `my_awesome_template` file with ready-to-use project template
 
 ### Quick Start
-> NOTE: Windows is not supported; Mac OS is not tested
+#### Platforms supported
+* [x] Linux
+* [x] Mac OS
+* [ ] Windows
 
 #### Step 1. Clone the repository
 ```bash
