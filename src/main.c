@@ -102,44 +102,29 @@ void new(int argc, char** args) {
 
 	char* template_name = args[0];
 	char* project_name = args[1];
-
-	char* home_dir;
 	
 	char template_location[PATH_MAX];
 	template_location[0] = 0;
 	
-	char buf1[512];
-	int status = 0;
+	// Get templates directory
+	char* last = strrchr(self, '/');
+	char* first = &self[0];
 
-	if ((status = readlink("/proc/self/exe", buf1, 512) != -1)) {
-		char* last = strrchr(buf1, '/');
-		char* first = &buf1[0];
+	char* new_buf = malloc(sizeof(char) * (strlen(self)));
+	int i = 0;
 
-		char* new_buf = malloc(sizeof(char) * (status+1));
-		int i = 0;
-
-		for (; first != last; first++) {
-			new_buf[i] = *first;
-			i++;
-		}
-
-		new_buf[i] = 0;
-
-		strcat(template_location, new_buf);
-		strcat(template_location, "/templates/");
-		strcat(template_location, template_name);
-
-		free(new_buf);
+	for (; first != last; first++) {
+		new_buf[i] = *first;
+		i++;
 	}
-	else if ((home_dir = getenv("HOME")) == NULL) {
-		fprintf(stderr, "*HOME environment variable is not set, alternative template path (binary dir)/templates doesn't exist*\n");
-		exit(3);
-	}
-	else {
-		strcat(template_location, home_dir);
-		strcat(template_location, "/.config/mpt/");
-		strcat(template_location, template_name);
-	}
+
+	new_buf[i] = 0;
+
+	strcat(template_location, new_buf);
+	strcat(template_location, "/templates/");
+	strcat(template_location, template_name);
+
+	free(new_buf);
 	
 	if (!is_file(template_location) || is_dir(template_location)) {
 		fprintf(stderr, "*Path '%s' is not a file/doesn't exist*\n", template_location);
@@ -296,7 +281,8 @@ void run(int argc, char** args) {
 }
 
 int main(int argc, char** args) {
-	if (args == 0) return -90;
+	if (argc == 0) return -90;
+	realpath(args[0], self);
 
 	if (strcmp(args[argc-1], "--silent") == 0) {
 		silent = true;

@@ -37,16 +37,9 @@ void build_subprojects() {
 				}
 				
 				chdir(path);
-				char buf1[512];
-				int status = 0;
-
-				if((status = readlink("/proc/self/exe", buf1, 512)) == -1) {
-					fprintf(stderr, "*Failed to build subprojects: Failed to get MPT binary's location*\n");
-					exit(-1);
-				}
 
 				char cmd[1024];
-				sprintf(cmd, "%s build --silent", buf1);
+				sprintf(cmd, "%s build --silent", self);
 				
 				if(system(cmd) != 0) {
 					chdir(original_path);

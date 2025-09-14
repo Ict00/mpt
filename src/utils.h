@@ -6,6 +6,7 @@
 #define PATH_MAX 4096
 
 extern bool silent;
+extern char self[512];
 
 typedef void (*listdir_exec)(char* path);
 

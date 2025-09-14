@@ -11,6 +11,7 @@
 #include "core/strategy.h"
 
 bool silent = false;
+char self[512];
 
 #define try_do_strategy(strat) \
     if (strcmp(GLOBAL_CONFIG.strategy, #strat) == 0) { \
