@@ -3,6 +3,8 @@
 #include "config/gconfig.h"
 #include <stdbool.h> 
 
+#define PATH_MAX 4096
+
 extern bool silent;
 
 typedef void (*listdir_exec)(char* path);

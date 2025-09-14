@@ -1,7 +1,6 @@
 #include "c_console.h"
 #include "../../utils.h"
 #include "../../config/gconfig.h"
-#include <linux/limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 

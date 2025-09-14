@@ -1,6 +1,5 @@
 #include "utils.h"
 #include "config/gconfig.h"
-#include <linux/limits.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

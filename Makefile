@@ -2,7 +2,7 @@ SRC_DIR = src
 OBJ_DIR = obj
 
 CC = clang
-CFLAGS = -O3 -std=c23 -D_XOPEN_SOURCE=500
+CFLAGS = -O3 -std=c99 -D_XOPEN_SOURCE=500
 TARGET = mpt
 
 LDFLAGS = -O3

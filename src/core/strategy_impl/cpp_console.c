@@ -2,7 +2,6 @@
 
 #include "../../config/gconfig.h"
 #include "../../utils.h"
-#include <linux/limits.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
