@@ -282,7 +282,7 @@ void run(int argc, char** args) {
 
 int main(int argc, char** args) {
 	if (argc == 0) return -90;
-	realpath(args[0], self);
+	get_self(args[0]);
 
 	if (strcmp(args[argc-1], "--silent") == 0) {
 		silent = true;

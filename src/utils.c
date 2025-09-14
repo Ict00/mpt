@@ -19,6 +19,39 @@ char self[512];
         return; \
     }
 
+void get_self(char *name) {
+	if (strchr(name, '/') == NULL) {
+		char* path_env = getenv("PATH");
+		if (!path_env) {
+			fprintf(stderr, "*Failed to get PATH*\n");
+			exit(-1);
+		}
+
+		char* path_copy = strdup(path_env);
+		char* dir = strtok(path_copy, ":");
+
+		while (dir) {
+			char full_path[PATH_MAX];
+			snprintf(full_path, sizeof(full_path), "%s/%s", dir, name);
+
+			if (access(full_path, X_OK) == 0) {
+				char* result = realpath(full_path, NULL);
+				free(path_copy);
+				strcpy(self, result);
+				free(result);
+				return;
+			}
+			
+			dir = strtok(NULL, ":");
+		}
+
+		free(path_copy);
+		self[0] = 0; // Failed to get self :/
+	}
+	else
+		realpath(name, self);
+}
+
 void append_to_str(char **dest, const char *str) {
 	int new_length = strlen(*dest) + strlen(str) + 1;
 	char* new_dest = malloc(sizeof(char)*new_length);

@@ -10,6 +10,7 @@ extern char self[512];
 
 typedef void (*listdir_exec)(char* path);
 
+void get_self(char* name);
 void append_to_str(char** dest, const char* str);
 bool ends_with(char* src, char* what);
 bool is_file(const char* path);
