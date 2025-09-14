@@ -20,59 +20,59 @@ strategy_t dummy;
 void init_strategies() {
 
 	static step_t cc_steps[6] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{build_subprojects, "Building subprojects...", 0},
-		{common_includes, "Adding includes", 0},
-		{cct_compile, "Building C files", 0},
-		{cct_link, "Linking...", 0},
-		{common_done, "Executing Post CMD (if there is any)", 0}
+		{common_start, "Executing Init CMD (if there is any)"},
+		{build_subprojects, "Building subprojects..."},
+		{common_includes, "Adding includes"},
+		{cct_compile, "Building C files"},
+		{cct_link, "Linking..."},
+		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
 	static step_t cppc_steps[6] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{build_subprojects, "Building subprojects...", 0},
-		{common_includes, "Adding includes", 0},
-		{cpp_c_compile, "Building C++ files", 0},
-		{cct_link, "Linking...", 0},
+		{common_start, "Executing Init CMD (if there is any)"},
+		{build_subprojects, "Building subprojects..."},
+		{common_includes, "Adding includes"},
+		{cpp_c_compile, "Building C++ files"},
+		{cct_link, "Linking..."},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 	
 	static step_t cstl_steps[5] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{common_includes, "Adding includes", 0},
-		{cct_compile, "Building C files", 0},
-		{link_into_lib, "Linking...", 0},
+		{common_start, "Executing Init CMD (if there is any)"},
+		{common_includes, "Adding includes"},
+		{cct_compile, "Building C files"},
+		{link_into_lib, "Linking..."},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 	
 	static step_t cppstl_steps[5] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{common_includes, "Adding includes", 0},
-		{cpp_c_compile, "Building C++ files", 0},
-		{link_into_lib, "Linking...", 0},
+		{common_start, "Executing Init CMD (if there is any)"},
+		{common_includes, "Adding includes"},
+		{cpp_c_compile, "Building C++ files"},
+		{link_into_lib, "Linking..."},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
 	static step_t cppshl_steps[6] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{common_includes, "Adding includes", 0},
-		{init_for_shared, "Editing 'flags' field", 0},
-		{cpp_c_compile, "Building C++ files", 0},
-		{link_into_shared_lib, "Linking...", 0},
+		{common_start, "Executing Init CMD (if there is any)"},
+		{common_includes, "Adding includes"},
+		{init_for_shared, "Editing 'flags' field"},
+		{cpp_c_compile, "Building C++ files"},
+		{link_into_shared_lib, "Linking..."},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
 	static step_t cshl_steps[6] = {
-		{common_start, "Executing Init CMD (if there is any)", 0},
-		{common_includes, "Adding includes", 0},
-		{init_for_shared, "Editing 'flags' field", 0},
-		{cct_compile, "Building C files", 0},
-		{link_into_shared_lib, "Linking...", 0},
+		{common_start, "Executing Init CMD (if there is any)"},
+		{common_includes, "Adding includes"},
+		{init_for_shared, "Editing 'flags' field"},
+		{cct_compile, "Building C files"},
+		{link_into_shared_lib, "Linking..."},
 		{common_done, "Executing Post CMD (if there is any)"}
 	};
 
 	static step_t dm_steps[1] = {
-		{common_done, "Executing CMD", 0}
+		{common_done, "Executing CMD"}
 	};
 
 	c_console = (strategy_t){.name="C: Console", .steps=cc_steps, .steps_count=6};
@@ -92,7 +92,6 @@ void do_strategy(strategy_t strategy) {
 		char* _bar = bar(30, strategy.steps_count, i);
 		out_status(strategy.steps[i].description, _bar, strategy.steps_count, i+1);
 		strategy.steps[i].exec();
-		usleep(strategy.steps[i].timeout*10000);	
 	}
 	if (!silent) {
 		char* _bar = bar(30, 1, 1);

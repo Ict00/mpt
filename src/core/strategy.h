@@ -7,7 +7,6 @@ typedef void (*st_exec)(void);
 struct {
 	st_exec exec;
 	const char* description;
-	int timeout;
 } typedef step_t;
 
 struct {
