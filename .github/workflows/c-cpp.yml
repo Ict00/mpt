@@ -10,7 +10,15 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: make
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Install dependencies (Ubuntu)
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y clang
+        
+    - name: Run make
       run: make
