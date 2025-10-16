@@ -14,6 +14,7 @@ struct {
 	char* subprojects;
 	char* name;
 	char* sources;
+	char* makeDirs;
 } typedef target;
 
 struct {

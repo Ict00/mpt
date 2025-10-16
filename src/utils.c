@@ -212,6 +212,7 @@ void free_config(build_config conf) {
 		free(current->ldflags);
 		free(current->post_cmd);
 		free(current->pre_cmd);
+		free(current->makeDirs);
 		free(current);
 	}
 

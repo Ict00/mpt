@@ -111,6 +111,11 @@ static void assign_to_target(target* dest, char* fname, char* fvalue) {
 		dest->includes = fvalue;
 		return;
 	}
+	if (strcmp(fname, "makedirs") == 0) {
+		free(dest->makeDirs);
+		dest->makeDirs = fvalue;
+		return;
+	}
 	if (strcmp(fname, "subprojects") == 0) {
 		free(dest->subprojects);
 		dest->subprojects = fvalue;
@@ -172,6 +177,7 @@ static target* parse_target(char* text, int* pos) {
 	res->pre_cmd = strdup("");
 	res->includes = strdup("");
 	res->subprojects = strdup("");
+	res->makeDirs = strdup("obj");
 	res->compiler = strdup("cc");
 	res->binary_name = strdup("program");
 	res->sources = strdup("src");

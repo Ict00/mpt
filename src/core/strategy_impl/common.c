@@ -1,6 +1,7 @@
 #include "common.h"
 
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <stdio.h>
 #include "../../config/gconfig.h"
@@ -12,6 +13,29 @@ void common_done() {
 
 void common_start() {
 	system(CURRENT_TARGET.pre_cmd);
+	char path[256];
+	int b = 0;
+	
+	for (int i = 0; CURRENT_TARGET.makeDirs[i] != 0; i++) {
+		if (CURRENT_TARGET.makeDirs[i] == ':' || CURRENT_TARGET.makeDirs[i+1] == 0) {
+			if (CURRENT_TARGET.makeDirs[i+1] == 0) {
+				path[b] = CURRENT_TARGET.makeDirs[i];
+				b++;
+			}
+			
+			path[b] = 0;
+			b = 0;
+			
+			if (!is_dir(path)) {
+				mkdir(path, 0775);
+			}
+			
+			continue;
+		}
+		
+		path[b] = CURRENT_TARGET.makeDirs[i];
+		b++;
+	}
 }
 
 void build_subprojects() {
